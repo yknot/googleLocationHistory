@@ -11,8 +11,9 @@
 .Rproj.user/
 *.Rproj
 
-# kml files
+# location files
 *.kml
+*.csv
 
 # =========================
 # Operating System Files
