@@ -9,6 +9,10 @@
 
 # RStudio files
 .Rproj.user/
+*.Rproj
+
+# kml files
+*.kml
 
 # =========================
 # Operating System Files
