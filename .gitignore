@@ -11,9 +11,10 @@
 .Rproj.user/
 *.Rproj
 
-# location files
+# local files
 *.kml
 *.csv
+*.png
 
 # =========================
 # Operating System Files
