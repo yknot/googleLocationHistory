@@ -14,7 +14,8 @@
 # local files
 *.kml
 *.csv
-*.png
+*Temp.png
+Test.png
 
 # =========================
 # Operating System Files
