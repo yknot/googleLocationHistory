@@ -6,7 +6,7 @@ plotMap <- function(df, coord, z, filename){
   # plot Northeast with location points
   ggmap(map) +
     geom_point(aes(x = lon, y = lat), data = df,
-               alpha = .5, color="darkred", size = 2) +
+               alpha = .5, color="darkred", size = 1) +
     theme_nothing()
   
   
