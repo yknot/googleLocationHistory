@@ -15,6 +15,12 @@ Steps:
 NorthEast Map
 ![NorthEast Map](/imgs/NorthEast.png)
 
+Upstate Map
+![Upstate Map](/imgs/Upstate.png)
+
+New York Map
+![New York Map](/imgs/NewYork.png)
+
 
 Colorado Map
 ![Colorado Map](/imgs/Colorado.png)
@@ -24,8 +30,10 @@ St. Martin Map
 ![St. Martin Map](/imgs/StMartin.png)
 
 
-San Francisco
+San Francisco Map
 ![San Francisco Map](/imgs/SanFrancisco.png)
 
+San Francisco Zoom Map
+![San Francisco Zoom Map](/imgs/SanFranciscoZoom.png)
 
 
