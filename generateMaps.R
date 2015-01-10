@@ -9,6 +9,17 @@ source("plotMap.R")
 if (!exists("gps"))
   gps <- read.csv("history-2014.csv", sep = ',', header = TRUE)
 
+lonDiff = 0
+latDiff = 0
+
+for (i in 2:length(gps[,1])) {
+  lonDiff = lonDiff + abs(gps[i,4] -  gps[i-1,4])
+  latDiff = latDiff + abs(gps[i,5] -  gps[i-1,5])
+}
+
+boxplot(gps[,4])
+
+
 
 # Northeast zoomed out
 NLon = mean(gps$lon[gps$lon > -80 && gps$lon < -65 && gps$lat > 35 && gps$lat < 50])
