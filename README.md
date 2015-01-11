@@ -16,6 +16,9 @@ NorthEast Map
 ![Northeast Map](/imgs/NorthEast.png)
 
 Northeast Annotated Map
+Blue = Ultimate Tournaments
+Yellow = Hiking
+Green = Skiing
 ![Northeast Map](/imgs/Northeast-annotated.png)
 
 Upstate Map
