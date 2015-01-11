@@ -1,9 +1,9 @@
 plotMap <- function(df, coord, z, filename){
   
-  # get Northeast map
+  # get map
   map <- get_map(location=coord, source = "google", maptype = "roadmap", zoom=z)
   
-  # plot Northeast with location points
+  # plot with location points
   ggmap(map) +
     geom_point(aes(x = lon, y = lat), data = df,
                alpha = .5, color="darkred", size = 1) +

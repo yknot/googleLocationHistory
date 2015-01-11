@@ -13,7 +13,10 @@ Steps:
 - use data to create charts and run analysis in R
 
 NorthEast Map
-![NorthEast Map](/imgs/NorthEast.png)
+![Northeast Map](/imgs/NorthEast.png)
+
+Northeast Annotated Map
+![Northeast Map](/imgs/Northeast-annotated.png)
 
 Upstate Map
 ![Upstate Map](/imgs/Upstate.png)
