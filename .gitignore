@@ -11,11 +11,16 @@
 .Rproj.user/
 *.Rproj
 
+# ipython files
+.ipynb_checkpoints/
+
+
 # local files
 *.kml
 *.csv
 *Temp.png
 Test.png
+raws/
 
 # =========================
 # Operating System Files
