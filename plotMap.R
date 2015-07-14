@@ -6,7 +6,7 @@ plotMap <- function(df, coord, z, filename){
   # plot with location points
   ggmap(map) +
     geom_point(aes(x = lon, y = lat), data = df,
-               alpha = .5, color="darkred", size = 1) +
+               alpha = .5, color=df$cluster, size = 1) +
     theme_nothing()
   
   
