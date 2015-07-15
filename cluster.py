@@ -1,4 +1,6 @@
-import pylab as pl
+import matplotlib.pyplot as plt
+import matplotlib.colors as colors
+import matplotlib.cm as cmx
 import math
 from sets import Set
 
@@ -81,8 +83,39 @@ def expandCluster(P, NeighborPts, C, D, eps, MinPts) :
         if D[j].cluster == 0:
             D[j].cluster = C
 
+# filter data
+def filterPoints(x1, x2, y1, y2, Data):
+    subset = []
+    for P in Data:
+        if P.lon > x1 and P.lon < x2:
+            if P.lat > y1 and P.lat < y2:
+                subset.append(P)
 
+    return subset
 
+# plot cluster data
+def plot(DF):
+    uniq = list(set([P.cluster for P in DF]))
+
+    z = range(1,len(uniq))
+    hot = plt.get_cmap('hot')
+    cNorm = colors.Normalize(vmin=0, vmax=len(uniq))
+    scalarMap = cmx.ScalarMappable(norm=cNorm, cmap=hot)
+
+    for P in DF:
+        plt.scatter(P.lon, P.lat, s=15, color=scalarMap.to_rgba(P.cluster))
+
+    plt.xlabel('Longitude')
+    plt.ylabel('Latitude')
+    plt.title('Plotting Clusters')
+    plt.show()
+
+# save data to csv for mapping
+def save(DF, name):
+    with open(name + '.csv', 'w') as out:
+        out.write('lat,lon,cluster\n')
+        for P in DF:
+            out.write(str(P.lat) + ',' + str(P.lon) + ',' + str(P.cluster) + '\n')
 
 
 # read in to multi dimensional array
@@ -94,35 +127,26 @@ Data = []
 for row in HISTORY[1:]:
     Data.append(Point(row[0], row[1], row[2], row[3], row[4]))
 
-# filter D down to only northeast NE
-NE = []
-for P in Data:
-    if P.lon > -80 and P.lon < -65:
-        if P.lat > 35 and P.lat < 50:
-            NE.append(P)
-#
-# SF = []
-# for P in Data:
-#     if P.lon > -125 and P.lon < -119:
-#         if P.lat > 35 and P.lat < 40:
-#             SF.append(P)
 
-# pl.scatter([P.lat for P in SF], [P.lon for P in SF])
+
+# Northeast
+# NE = filterPoints(-80,-65,35,50, Data)
+#
+# eps = .0000001
+# MinPts = 3
+# DBSCAN(NE, eps, MinPts)
+#
+# plot(NE)
+#
+# save(NE, 'NE')
+
+# San Fran
+SF = filterPoints(-125, -119, 35, 40, Data)
 
 eps = .1
 MinPts = 3
-DBSCAN(NE, eps, MinPts)
+DBSCAN(SF, eps, MinPts)
 
+plot(SF)
 
-
-# with open('SF.csv', 'w') as out:
-#     out.write('lat,lon,cluster\n')
-#     for P in SF:
-#         out.write(str(P.lat) + ',' + str(P.lon) + ',' + str(P.cluster) + '\n')
-
-
-
-with open('NE.csv', 'w') as out:
-    out.write('lat,lon,cluster\n')
-    for P in NE:
-        out.write(str(P.lat) + ',' + str(P.lon) + ',' + str(P.cluster) + '\n')
+save(SF, 'SF')
