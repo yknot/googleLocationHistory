@@ -27,13 +27,8 @@ Clust: """ + str(self.cluster)
 def DBSCAN(D, eps, MinPts):
     # set cluster counter
     C = 1
-    date = ''
-    print 'Starting Loop'
     # for each point in the data
     for P in D:
-        if date != P.date:
-            date = P.date
-            print date
         # if visited continue
         if P.visited:
             continue
@@ -59,6 +54,10 @@ def distance(P, Q):
 def regionQuery(P, D, eps):
     NeighborPts = Set()
     for i in range(len(D)):
+        if abs(D[i].lat - P.lat) > eps and D[i].lon != P.lon:
+            continue
+        if abs(D[i].lon - P.lon) > eps and D[i].lat != P.lat:
+            continue
         if distance(P, D[i]) < eps:
             NeighborPts.add(i)
 
@@ -143,7 +142,7 @@ for row in HISTORY[1:]:
 # San Fran
 SF = filterPoints(-125, -119, 35, 40, Data)
 
-eps = .1
+eps = .0001
 MinPts = 3
 DBSCAN(SF, eps, MinPts)
 

@@ -1,11 +1,11 @@
-googleLocationHistory
-=====================
+#googleLocationHistory
+
 
 Charts created using my google location history
+Clusters of places using my google location history
 
 
-2014
----
+##2014 maps
 
 Steps:
 - download kml files from google location history by 30 day intervals
@@ -13,33 +13,35 @@ Steps:
 - use data to create charts and run analysis in R
 
 NorthEast Map
-![Northeast Map](/imgs/NorthEast.png)
+![Northeast Map](imgs/NorthEast.png)
 
 Northeast Annotated Map
 Blue = Ultimate Tournaments
 Yellow = Hiking
 Green = Skiing
-![Northeast Map](/imgs/Northeast-annotated.png)
+![Northeast Map](imgs/Northeast-annotated.png)
 
 Upstate Map
-![Upstate Map](/imgs/Upstate.png)
+![Upstate Map](imgs/Upstate.png)
 
 New York Map
-![New York Map](/imgs/NewYork.png)
+![New York Map](imgs/NewYork.png)
 
 
 Colorado Map
-![Colorado Map](/imgs/Colorado.png)
+![Colorado Map](imgs/Colorado.png)
 
 
 St. Martin Map
-![St. Martin Map](/imgs/StMartin.png)
+![St. Martin Map](imgs/StMartin.png)
 
 
 San Francisco Map
-![San Francisco Map](/imgs/SanFrancisco.png)
+![San Francisco Map](imgs/SanFrancisco.png)
 
 San Francisco Zoom Map
-![San Francisco Zoom Map](/imgs/SanFranciscoZoom.png)
+![San Francisco Zoom Map](imgs/SanFranciscoZoom.png)
 
 
+##2014 clusters
+Cluster locations together
