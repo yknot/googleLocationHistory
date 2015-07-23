@@ -17,6 +17,7 @@
 
 # local files
 *.kml
+*.json
 *.csv
 *Temp.png
 Test.png
