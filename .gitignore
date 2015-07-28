@@ -20,7 +20,7 @@
 *.json
 *.csv
 *Temp.png
-Test.png
+*.png
 raws/
 
 # =========================

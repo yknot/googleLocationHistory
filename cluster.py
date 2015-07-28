@@ -1,8 +1,5 @@
 import matplotlib.pyplot as plt
-import matplotlib.colors as colors
-import matplotlib.cm as cmx
-import math
-from sets import Set
+from scipy.spatial import cKDTree
 
 
 class Point(object):
@@ -22,65 +19,72 @@ Lon:   """ + str(self.lon) + """
 Visit: """ + str(self.visited) + """
 Clust: """ + str(self.cluster)
 
-
-# pass in data frame, eps, minpts
-def DBSCAN(D, eps, MinPts):
-    # set cluster counter
-    C = 1
-    # for each point in the data
-    for P in D:
-        # if visited continue
-        if P.visited:
-            continue
-        # set as visited
-        P.visited = 1
-        # find neightbor pts
-        # NeighborPts is set of indexes
-        NeighborPts = regionQuery(P, D, eps)
-
-        # if not enough points set as noise
-        if len(NeighborPts) < MinPts:
-            P.cluster = -1
-        # else expand the cluster to nearby points
-        else:
-            expandCluster(P, NeighborPts, C, D, eps, MinPts)
-            C += 1
-
-# distance equation for 2 points
-def distance(P, Q):
-    return math.sqrt(pow(Q.lat-P.lat,2) + pow(Q.lon-P.lon,2))
-
-# return all points within P's eps-neighborhood (including P)
-def regionQuery(P, D, eps):
-    NeighborPts = Set()
-    for i in range(len(D)):
-        if abs(D[i].lat - P.lat) > eps and D[i].lon != P.lon:
-            continue
-        if abs(D[i].lon - P.lon) > eps and D[i].lat != P.lat:
-            continue
-        if distance(P, D[i]) < eps:
-            NeighborPts.add(i)
-
-    return NeighborPts
+    def coord(self):
+        return [self.lon, self.lat]
 
 
-# recursively check to see if neighboorhood can be expanded
-def expandCluster(P, NeighborPts, C, D, eps, MinPts) :
-    # set P to cluster C
-    P.cluster = C
-    # for each new P in NeighborPts
-    for j in NeighborPts:
-        # if not visited, set to visited
-        if not D[j].visited:
-            D[j].visited = 1
-            # find new NeighborPts based on new prime
-            NeighborPtsNew = regionQuery(D[j], D, eps)
-            # if big enough list join with current list
-            if len(NeighborPtsNew) >= MinPts:
-                NeighborPts = NeighborPts | NeighborPtsNew
 
-        if D[j].cluster == 0:
-            D[j].cluster = C
+class DBSCAN(object):
+    """DBSCAN algorithm implementation
+        - init with eps and minPts value
+        - use addPoints to add to the tree
+        - use solve to compute or re-compute clusters"""
+
+    def __init__(self, eps, minPts):
+        self.eps, self.minPts = eps, minPts
+        self.points = []
+
+    def addPoints(self, data):
+        if len([p for p in data if type(p) != Point]) > 0:
+            raise ValueError('Error in data passed in. Not array of points.')
+
+        for p in data:
+            self.points.append(p)
+
+        self.coords = [p.coord() for p in self.points]
+
+        self.tree = cKDTree(self.coords)
+        self.neighbors = self.tree.query_ball_point(self.coords, self.eps)
+
+
+    def solve(self):
+        visited = set()
+        self.clusters = []
+        numCluster = -1
+
+        for i in range(len(self.points)):
+            # if visited skip it
+            if i in visited:
+                continue
+            # add the index to visited list
+            visited.add(i)
+
+            # if the length of neighbors for i is greater than min points
+            if len(self.neighbors[i]) >= self.minPts:
+                # add new cluster
+                self.clusters.append({i})
+                # increment counter
+                numCluster += 1
+                # set cluster value of point to cluster number
+                self.points[i].cluster = numCluster
+                # points in the neighborhood
+                toMerge = set(self.neighbors[i])
+
+                while toMerge:
+                    j = toMerge.pop()
+                    # if j isn't visited visit and add cluster value
+                    if j not in visited:
+                        visited.add(j)
+                        self.points[j].cluster = numCluster
+                        # if minPts add them to the toMerge set
+                        if len(self.neighbors[j]) >= self.minPts:
+                            toMerge |= set(self.neighbors[j])
+
+                    if not any([j in c for c in self.clusters]):
+                        self.points[j].cluster = numCluster
+                        self.clusters[-1].add(j)
+
+
 
 # filter data
 def filterPoints(x1, x2, y1, y2, Data):
@@ -94,15 +98,14 @@ def filterPoints(x1, x2, y1, y2, Data):
 
 # plot cluster data
 def plot(DF):
-    uniq = list(set([P.cluster for P in DF]))
+    points = [p.coord() for p in DF]
 
-    z = range(1,len(uniq))
-    hot = plt.get_cmap('hot')
-    cNorm = colors.Normalize(vmin=0, vmax=len(uniq))
-    scalarMap = cmx.ScalarMappable(norm=cNorm, cmap=hot)
+    plt.scatter(*zip(*points), color=[.75] * 3, alpha=.5, s= 15)
 
-    for P in DF:
-        plt.scatter(P.lon, P.lat, s=15, color=scalarMap.to_rgba(P.cluster))
+    colors = 'rbgycm' * 1000
+    for i, clust in enumerate(scan.clusters):
+        core = list(clust)
+        plt.scatter(*zip(*[points[i] for i in xrange(len(points)) if i in clust]), color=colors[i], alpha=1, s=15)
 
     plt.xlabel('Longitude')
     plt.ylabel('Latitude')
@@ -129,23 +132,29 @@ for row in HISTORY[1:]:
 
 
 # Northeast
-# NE = filterPoints(-80,-65,35,50, Data)
-#
-# eps = .0000001
-# MinPts = 3
-# DBSCAN(NE, eps, MinPts)
-#
-# plot(NE)
-#
-# save(NE, 'NE')
-
-# San Fran
-SF = filterPoints(-125, -119, 35, 40, Data)
+NE = filterPoints(-80,-65,35,50, Data)
 
 eps = .0001
-MinPts = 3
-DBSCAN(SF, eps, MinPts)
+minPts = 3
+scan = DBSCAN(eps, minPts)
 
-plot(SF)
+scan.addPoints(NE)
+scan.solve()
 
-save(SF, 'SF')
+plot(NE)
+
+save(NE, 'NE')
+
+# San Fran
+# SF = filterPoints(-125, -119, 35, 40, Data)
+#
+# eps = .01
+# minPts = 3
+# scan = DBSCAN(eps, minPts)
+#
+# scan.addPoints(SF)
+# scan.solve()
+#
+#
+# plot(SF)
+# save(SF, 'SF')
