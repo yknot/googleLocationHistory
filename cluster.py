@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 from scipy.spatial import cKDTree
+import sys
+import time
 
 
 class Point(object):
@@ -130,31 +132,34 @@ for row in HISTORY[1:]:
     Data.append(Point(row[0], row[1], row[2], row[3], row[4]))
 
 
+filters = {
+'NE': [-80, -65, 35, 50],
+'SF': [-125, -119, 35, 40]
+}
 
-# Northeast
-NE = filterPoints(-80,-65,35,50, Data)
+name = sys.argv[1]
+eps = float(sys.argv[2])
+minPts = int(sys.argv[3])
 
-eps = .0001
-minPts = 3
+# filter data points
+DF = filterPoints(filters[name][0],filters[name][1],filters[name][2],filters[name][3], Data)
+
 scan = DBSCAN(eps, minPts)
-
-scan.addPoints(NE)
+t0 = time.time()
+scan.addPoints(DF)
 scan.solve()
+t1 = time.time()
 
-plot(NE)
 
-save(NE, 'NE')
+print 'Epsilon value:      ' + str(eps)
+print 'Minimum points:     ' + str(minPts)
+print 'Number of Points:   ' + str(len(scan.points))
+print 'Number of Clusters: ' + str(len(scan.clusters))
+print 'Time taken:         ' + str(t1 - t0)
 
-# San Fran
-# SF = filterPoints(-125, -119, 35, 40, Data)
-#
-# eps = .01
-# minPts = 3
-# scan = DBSCAN(eps, minPts)
-#
-# scan.addPoints(SF)
-# scan.solve()
-#
-#
-# plot(SF)
-# save(SF, 'SF')
+
+# save data frame with clusters
+save(DF, name)
+
+# plot the points
+plot(scan.points)
